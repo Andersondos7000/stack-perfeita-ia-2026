@@ -479,3 +479,29 @@ O autor disponibiliza na descrição do vídeo uma skill pronta para montar o se
 ---
 
 *Documentado por Antigravity (AGY) · Fonte: NotebookLM notebook `49f7cea6-90a1-459a-af86-823a8c2087e5` · 2026-10-02*
+
+
+---
+
+## Virada de Chave Arquitetural: Migração Cloudflare D1 + OmniRoute + Astro/JEV (2026-10-03)
+
+### 1. Motivação e Objetivos Estratégicos
+- **Fim da Hibernação & Instabilidade:** Eliminação do risco de congelamento dos bancos de dados gratuitos (Supabase Free tier) que exigiam rotinas contínuas de keep-alive.
+- **Roteamento Inteligente & Economia (OmniRoute):** Implementação do OmniRoute (`E:\OmniRoute`) como gateway e motor de inferência central (fallback inteligente, compressão de tokens com RTK/Caveman, suporte multi-provedor sem lock-in).
+- **Edge Data Plane (Cloudflare D1 & Workers):** Migração estruturada dos bancos relacionais para Cloudflare D1 (banco SQL SQLite edge serverless, latência ultrabaixa, alta disponibilidade e tier gratuito generoso sem cold start destrutivo).
+- **Frontend de Alta Eficiência (Astro + JEV):** Adoção de Astro integrado com JavaScript Event-driven (JEV) para páginas com zero runtime desnecessário, carregamento instantâneo e renderização otimizada para consumo de agentes.
+
+### 2. Plano de Migração Passo a Passo (Segurança em Primeiro Lugar)
+1. **Ponto de Restauração & Backup (Git / Dumps):**
+   - Criação de tag/branch de snapshot em todos os repositórios envolvidos antes de qualquer alteração de schema.
+   - Extração de dump SQL completo de cada instância ativa do Supabase (iniciando pelo banco da Agência).
+   - Armazenamento de dumps criptografados e versionados localmente como contingência imediata de rollback.
+2. **Setup do Cloudflare D1:**
+   - Criação das instâncias D1 via `wrangler d1 create <db-name>`.
+   - Conversão e adaptação dos schemas PostgreSQL (Supabase) para sintaxe SQLite/D1.
+   - Carga inicial de dados e validação de integridade referencial.
+3. **Virada de Conectores & MCP Gateway:**
+   - Atualização das rotas no `mcp-gateway` / `db-gateway` para direcionar requisições ao Cloudflare D1 via bindings/REST API do Cloudflare.
+   - Manutenção temporária do Supabase como fallback em modo read-only durante o período de validação.
+4. **Validação & Homologação:**
+   - Teste de ponta a ponta dos fluxos operacionais, garantindo paridade total antes do desligamento definitivo das instâncias antigas.
