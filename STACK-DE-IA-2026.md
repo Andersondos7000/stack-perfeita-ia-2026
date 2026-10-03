@@ -505,3 +505,152 @@ O autor disponibiliza na descrição do vídeo uma skill pronta para montar o se
    - Manutenção temporária do Supabase como fallback em modo read-only durante o período de validação.
 4. **Validação & Homologação:**
    - Teste de ponta a ponta dos fluxos operacionais, garantindo paridade total antes do desligamento definitivo das instâncias antigas.
+
+### 3. Tabela Oficial de Bancos no Cloudflare D1 em Produção (9/10 Slots Free)
+
+| # | Banco D1 Ativo | UUID na Cloudflare | Projeto Origem (Supabase) | Status & Dados Validados em Produção |
+|---|---|---|---|---|
+| **1** | `d1-agencia` | `0af6fce5-bef0-407b-a331-45d35da87bca` | Site Agência ArtDesign | 🟢 **100% Migrado** (11 tabelas, 3.172 analytics) — 1.48 MB |
+| **2** | `d1-inteligency` | `2163fc1b-39a1-4418-81ef-2bb639b6373a` | InteligencyFree | 🟢 **100% Migrado** (5 tabelas: 27 leads, 82 eventos, 27 sessões) |
+| **3** | `d1-florescer` | `365fdef6-0447-479f-a1b4-8727923ccf3f` | Eu Vou Florescer | 🟢 **100% Migrado** (8 tabelas: event_config, 37 produtos, pedidos) |
+| **4** | `d1-youtube` | `3e8cb4ec-b6f5-4bdb-83be-b28ebdac91ef` | YouTube Cleaner | 🟢 **100% Migrado** (3 tabelas: users, senhas de admin, logs) |
+| **5** | `d1-postvideo` | `a6e89af0-f21f-4a0d-9d61-c13eb3bc870f` | Post Vídeo Automação | 🟢 **100% Migrado** (5 tabelas: 42 eventos, 18 filas sociais) |
+| **6** | `d1-ihokt` | `388f7d48-ab8f-489d-9015-86016a3f8686` | IHOKT Apoio / RAG | 🟢 **100% Migrado** (2 tabelas: documentos RAG e chat N8N) |
+| **7** | `d1-consolidado` | `4f502a44-ce3a-469f-951e-9d427c887a4e` | PneuVip + Resende AR | 🟢 **100% Migrado** (tabelas prefixadas `pneu_*` e `resend_*`) |
+| **8** | `d1-multiatendimento` | `ecdf07da-5377-49b5-9b80-6d87055dafce` | Multiatendimento CRM | 🟢 **Provisionado & Ativo** para conexão direta |
+| **9** | `d1-juliadias` | `6408f20a-51ef-4b69-b3f8-527d036c54ba` | Júlia Dias Fotografia | 🟢 **Provisionado & Ativo** para o site oficial |
+| **10**| **Queren Hapuque** | *(Sem D1)* | Dra. Queren Hapuque | 🟢 **Preservado 100% no Supabase** (Compliance) |
+
+> 💾 **Backups e Dumps SQL Locais:** Armazenados com segurança em `E:\Antigravity\GIT\stack-perfeita-ia-2026\migration-dumps\`.
+
+---
+
+## 🏛️ PARTE 2: A ARQUITETURA REAL EM OPERAÇÃO (2026)
+
+> **Base Local:** Drive `E:\` (SSD Dedicado para Agentes, OmniRoute e Repositórios Git)  
+> **Orquestrador Supremo (Mestre):** Gemini (Antigravity IDE — Visão 360°)  
+> **Motor Executivo Local:** Hermes Agent (`E:\hermes` / `J:\hermes`)  
+> **Supervisão & Observabilidade:** Maestre / Antigravity Dashboard  
+
+### 1. Hierarquia de Comando e Divisão de Papéis
+
+```
+                  ┌────────────────────────────────────────────────────────┐
+                  │       GEMINI — AGENTE ORQUESTRADOR CENTRAL (MESTRE)    │
+                  │       Visão 360° · Planejamento · Avaliação · Decisão  │
+                  └──────────────────────────┬─────────────────────────────┘
+                                             │ delega comandos
+                                             ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │       HERMES AGENT — MOTOR EXECUTIVO & OPERAÇÃO (E:\)  │
+                  │       Shell local · Builds · Git · Python · Automações │
+                  └──────────────────────────┬─────────────────────────────┘
+                                             │ controla / supervisiona
+                                             ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │       SOFTWARE DE CONTROLE: MAESTRE / ANTIGRAVITY IDE  │
+                  │       Fila de tarefas · Subagentes · Monitoramento     │
+                  └───────┬───────────────────────────────┬────────────────┘
+                          │                               │
+            ┌─────────────┴─────────────┐   ┌─────────────┴─────────────┐
+            ▼                           ▼   ▼                           ▼
+ ┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+ │ CAMADA 1: MEMÓRIA   │     │ CAMADA 2: SKILLS    │     │ CAMADA 3: OMNIROUTE │
+ │ Segundo Cérebro     │     │ Arsenal de Skills   │     │ Roteamento LLMs     │
+ │ Obsidian (.md)      │     │ E:\...\work-skills  │     │ E:\OmniRoute        │
+ └─────────────────────┘     └─────────────────────┘     └──────────┬──────────┘
+                                                                    │
+                                                                    ▼
+                                                         ┌─────────────────────┐
+                                                         │ CAMADA 4: BRAÇOS    │
+                                                         │ Hetzner (159...)    │
+                                                         │ n8n · Evolution     │
+                                                         └──────────┬──────────┘
+                                                                    │
+                                     ┌──────────────────────────────┴──────────────────────────────┐
+                                     ▼                                                             ▼
+                      ┌──────────────────────────────┐                              ┌──────────────────────────────┐
+                      │ ⚡ ASTRO + JEV (FRONTEND)    │                              │ 🗄️ CLOUDFLARE D1 (DATABASE)  │
+                      │ Ilhas de Interatividade      │◄────────────────────────────►│ 9 Bancos SQLite Serverless   │
+                      │ Ultra Conversão e Velocidade │       Dados & Eventos        │ Sem Pausa · Latência Global  │
+                      └──────────────────────────────┘                              └──────────────────────────────┘
+```
+
+#### Detalhamento das Entidades da Arquitetura:
+
+1. **Gemini — Agente Orquestrador Central (Mestre):**
+   - **Papel:** É a cabeça pensante da operação. Mantém o contexto de alto nível, analisa requisitos do negócio, decompondo objetivos complexos em passos atômicos.
+   - **Conectividade:** Possui visão 360° com links diretos para a Memória (Segundo Cérebro), Roteamento (OmniRoute), Ferramentas Externas e o Executor.
+
+2. **Hermes Agent — Motor Executivo Local (`E:\hermes` / `J:\hermes`):**
+   - **Papel:** É o "braço direito" no sistema de arquivos local. Executa comandos PowerShell, compilações, testes, migrações de dados, chamadas de API locais e scripts em segundo plano.
+   - **Base:** Roda com persistência no drive `E:\`, acessando os repositórios em `E:\Antigravity\GIT\`.
+
+3. **Software de Controle de Agentes (Maestre / Antigravity IDE):**
+   - **Papel:** Fornece o cockpit de observabilidade. Monitora consumo de tokens, status dos subagentes em execução paralela e filas de tarefas pendentes.
+
+4. **Camada 1: Memória Persistente (Segundo Cérebro):**
+   - **Local:** `g:\Protegido\Aplicações e Sites\Obsidian` (Vault Central).
+   - **Papel:** Guarda os PRDs de cada sistema, `claude.md`, `AGENTS.md`, manuais operacionais e histórico de decisões arquiteturais. A IA nunca parte do zero.
+
+5. **Camada 2: Skills Padronizadas (Arsenal Executável):**
+   - **Local:** `E:\Antigravity\GIT\work-skill-aresenal` e pasta de skills da IDE.
+   - **Papel:** Cada skill segue a "Regra 3x" (testada e validada 3 vezes antes de ser canonizada). Inclui templates de propostas comerciais, roteiros, automações e componentes visuais.
+
+6. **Camada 3: OmniRoute & Roteamento Inteligente:**
+   - **Local:** `E:\OmniRoute`.
+   - **Papel:** Gateway inteligente de inferência. Redireciona tarefas rápidas para modelos de baixo custo (Gemini Flash, DeepSeek V3) e tarefas complexas para modelos de raciocínio profundo (Claude 3.5 Sonnet, DeepSeek R1, GPT-4o), aplicando compressão de contexto (RTK / Caveman).
+
+7. **Camada 4: Braços Externos & Infraestrutura:**
+   - **Hetzner VPS (`159.69.196.223`):** Docker host rodando instâncias de n8n para automações assíncronas e Evolution API para mensageria WhatsApp.
+   - **Cloudflare Platform:** Workers, Pages, DNS e bindings de edge computing.
+
+8. **As Duas Viradas de Chave:**
+   - **Cloudflare D1:** Banco SQL relacional serverless com replicação global, 9 instâncias em produção, sem risco de congelamento gratuito.
+   - **Astro + JEV:** Frontend com JavaScript mínimo (arquitetura de ilhas), permitindo que agentes criem e mantenham interfaces com máxima velocidade de carregamento e alta conversão.
+
+---
+
+### 2. Fluxo Operacional Ponta a Ponta: Do Prompt ao Resultado
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Usuário / Cliente
+    participant Gemini as Gemini (Mestre / IDE)
+    participant Mem as Segundo Cérebro (Memória)
+    participant Skills as Arsenal de Skills
+    participant Hermes as Hermes Agent (Execução Local E:\)
+    participant Omni as OmniRoute (Inferência)
+    participant Infra as Hetzner & Cloudflare D1
+    participant Front as Astro + JEV
+
+    User->>Gemini: Prompt / Demanda de Negócio
+    Gemini->>Mem: Consulta regras, PRDs e contexto (.md)
+    Mem-->>Gemini: Contexto enriquecido & histórico
+    Gemini->>Skills: Localiza skill padronizada aplicável
+    Skills-->>Gemini: Workflow e parâmetros canônicos
+    Gemini->>Hermes: Ordem executiva de implementação
+    Hermes->>Omni: Roteamento inteligente de tokens/código
+    Omni-->>Hermes: Código / Query SQL / Lógica gerada
+    Hermes->>Infra: Aplica migrations no D1 / Dispara n8n / Evolution
+    Hermes->>Front: Atualiza páginas Astro + JEV em E:\Antigravity\GIT
+    Hermes-->>Gemini: Relatório de execução & evidências
+    Gemini-->>User: Entrega validada com sucesso!
+```
+
+---
+
+### 3. Roadmap de Implantação e Pendências Operacionais
+
+| # | Componente / Tarefa | Prioridade | Status | Dependência |
+|---|---|---|---|---|
+| **1** | Instalar e configurar **Maestre** no Windows (`E:\`) | 🔴 Alta | ⏳ Pendente | Node.js / Python |
+| **2** | Auditar `segundo-cerebro` — validar `claude.md` e `AGENTS.md` | 🔴 Alta | ⏳ Pendente | Obsidian Vault |
+| **3** | Estruturar as primeiras **3 Skills** do fluxo diário | 🔴 Alta | ⏳ Pendente | `work-skill-aresenal` |
+| **4** | Testar orquestração real: Maestre + Claude + Codex | 🟡 Média | ⏳ Pendente | Maestre instalado |
+| **5** | Configurar **Sperflow** (Voz → Prompt) | 🟢 Baixa | ⏳ Pendente | Microfone / API |
+| **6** | Integrar **Zerni** (Auto-post social) | 🟢 Baixa | ⏳ Pendente | APIs Sociais |
+| **7** | Avaliar **Higsfield** (Geração de vídeos IA) | 🟢 Baixa | ⏳ Pendente | Pipeline de Mídia |
+
+---
